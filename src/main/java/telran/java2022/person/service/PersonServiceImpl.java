@@ -1,5 +1,11 @@
 package telran.java2022.person.service;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -56,25 +62,35 @@ public class PersonServiceImpl implements PersonService {
 
 	@Override
 	public Iterable<PersonDto> findPersonsByCity(String city) {
-		return null;
+		return getAllPersonsStream().filter(n->n.getAddress().getCity().equals(city))
+									.map(n->modelMapper.map(n, PersonDto.class))
+									.collect(Collectors.toList());
 	}
 
 	@Override
 	public Iterable<PersonDto> findPersosnsByName(String name) {
-		// TODO Auto-generated method stub
-		return null;
+		return getAllPersonsStream().filter(n->n.getName().equals(name))
+				.map(n->modelMapper.map(n, PersonDto.class))
+				.collect(Collectors.toList());
 	}
 
 	@Override
 	public Iterable<PersonDto> findPersonsBetweenAge(Integer minAge, Integer maxAge) {
-		// TODO Auto-generated method stub
-		return null;
+		return getAllPersonsStream().filter(n->LocalDate.now().minus(maxAge, ChronoUnit.YEARS).isBefore(n.getBirthDate())
+				&&LocalDate.now().minus(minAge, ChronoUnit.YEARS).isAfter(n.getBirthDate()))
+				.map(n->modelMapper.map(n, PersonDto.class))
+				.collect(Collectors.toList());
 	}
 
 	@Override
 	public Iterable<CityPopulationDto> getCitiesPopulation() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	private Stream<Person> getAllPersonsStream() {
+		List<Person>list = (List<Person>) personRepository.findAll();
+		return list.stream();
 	}
 
 }

@@ -66,4 +66,14 @@ public class PersonController {
 	public PersonDto deletePerson(@PathVariable Integer id) {
 		return personService.removePerson(id);
 	}
+	
+	@GetMapping("/salary/{min}/{max}")
+	public Iterable<PersonDto> findEmployeeBySalary(@PathVariable Integer min, @PathVariable Integer max) {
+		return personService.findEmployeeBySalary(min, max);
+	}
+	
+	@GetMapping("/children")
+	public Iterable<PersonDto> findAllChildren() {
+		return personService.getChildren();
+	}
 }
